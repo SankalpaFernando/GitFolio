@@ -359,7 +359,46 @@ export default function Page() {
       </section>
 
       {/* Footer */}
-   
+      <footer className="border-t border-slate-800/50 mt-20 relative z-10">
+        <div className="max-w-6xl mx-auto px-6 py-16">
+          <div className="grid md:grid-cols-4 gap-8 mb-12">
+            <div>
+              <p className="font-bold text-lg bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4 flex items-center gap-2">
+                <Rocket className="w-5 h-5 text-blue-400" />
+                GitFolio
+              </p>
+              <p className="text-sm text-slate-400">The easiest way for developers to build their professional portfolio.</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-4">Product</p>
+              <ul className="space-y-2 text-sm text-slate-400">
+                <li><a href="#" className="hover:text-blue-400 transition">Features</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Pricing</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Examples</a></li>
+              </ul>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-4">Company</p>
+              <ul className="space-y-2 text-sm text-slate-400">
+                <li><a href="#" className="hover:text-blue-400 transition">About</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Blog</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Contact</a></li>
+              </ul>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-4">Connect</p>
+              <div className="flex gap-4">
+                <a href="#" className="text-slate-400 hover:text-blue-400 transition"><Github className="w-5 h-5" /></a>
+                <a href="#" className="text-slate-400 hover:text-blue-400 transition"><Linkedin className="w-5 h-5" /></a>
+                <a href="#" className="text-slate-400 hover:text-blue-400 transition"><Mail className="w-5 h-5" /></a>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-slate-800/50 pt-8 text-center">
+            <p className="text-sm text-slate-500">&copy; 2024 GitFolio. All rights reserved. Built with <span className="text-blue-400">❤️</span> for developers.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
