@@ -2,10 +2,38 @@
 
 import { Button } from "@/components/ui/button"
 import { Github, Linkedin, Mail, ExternalLink, Code, Zap, Palette, Search, BarChart3, Lock, ChevronDown, Rocket, Layers, Sparkles, ArrowRight, CheckCircle, Users, Globe, GithubIcon } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useHeaderScroll, useScrollAnimation } from '@/hooks/useScrollAnimation'
 
 export default function Page() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
+  const { isScrolled, activeSection } = useHeaderScroll()
+
+  // Setup scroll-triggered animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible')
+          }
+        })
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+      }
+    )
+
+    // Observe all reveal elements
+    document.querySelectorAll('.reveal-up, .reveal-down, .reveal-left, .reveal-right').forEach((el) => {
+      observer.observe(el)
+    })
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
@@ -17,18 +45,18 @@ export default function Page() {
       </div>
 
       {/* Navigation Header */}
-      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/80 border-b border-slate-800/50">
+      <nav className={`sticky top-0 z-50 backdrop-blur-xl transition-all duration-300 ${isScrolled ? 'scrolled' : 'border-b border-slate-800/50'}`}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="font-bold text-2xl bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent flex items-center gap-2">
-            <Rocket className="w-6 h-6 text-blue-400" /> 
+            <Rocket className="animate-bounce w-6 h-6 text-blue-400" /> 
             GitFolio
           </div>
           <div className="hidden md:flex gap-8 items-center text-sm">
-            <a href="#features" className="text-slate-300 hover:text-blue-400 transition">Features</a>
-            <a href="#how-it-works" className="text-slate-300 hover:text-blue-400 transition">How it Works</a>
-            <a href="#faqs" className="text-slate-300 hover:text-blue-400 transition">FAQs</a>
+            <a href="#features" className={`nav-link transition-colors ${activeSection === 'features' ? 'text-blue-400 active' : 'text-slate-300 hover:text-blue-400'}`}>Features</a>
+            <a href="#how-it-works" className={`nav-link transition-colors ${activeSection === 'how-it-works' ? 'text-blue-400 active' : 'text-slate-300 hover:text-blue-400'}`}>How it Works</a>
+            <a href="#faqs" className={`nav-link transition-colors ${activeSection === 'faqs' ? 'text-blue-400 active' : 'text-slate-300 hover:text-blue-400'}`}>FAQs</a>
           </div>
-          <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">Sign In</Button>
+          <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all hover:shadow-lg hover:shadow-blue-500/40">Sign In</Button>
         </div>
       </nav>
 
@@ -85,7 +113,7 @@ export default function Page() {
 
       {/* Features Section */}
       <section id="features" className="max-w-6xl mx-auto px-6 py-20 md:py-28 relative z-10">
-        <div className="text-center mb-16">
+        <div className="reveal-up text-center mb-16">
           <h2 className="animate-slide-up text-4xl md:text-5xl font-bold mb-4 text-white">Everything You Need to Stand Out</h2>
           <p className="animate-slide-up text-slate-400 text-lg max-w-2xl mx-auto stagger-1">
             GitFolio handles the design and hosting while you focus on building amazing projects.
@@ -131,7 +159,7 @@ export default function Page() {
               color: "from-red-500 to-pink-500"
             },
           ].map((feature, index) => (
-            <div key={index} className="group animate-slide-up relative overflow-hidden rounded-xl border border-slate-700/50 backdrop-blur-sm hover:border-slate-600/80 transition-all duration-300 hover:shadow-xl hover:shadow-slate-900/50" style={{ animationDelay: `${index * 0.1}s` }}>
+            <div key={index} className="group animate-slide-up reveal-up relative overflow-hidden rounded-xl border border-slate-700/50 backdrop-blur-sm hover:border-slate-600/80 transition-all duration-300 hover:shadow-xl hover:shadow-slate-900/50" style={{ animationDelay: `${index * 0.1}s` }}>
               <div className="absolute inset-0 bg-gradient-to-br from-slate-800/50 to-slate-900/50"></div>
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-slate-800/80 to-slate-900/80"></div>
               
@@ -149,7 +177,7 @@ export default function Page() {
 
       {/* How It Works */}
       <section id="how-it-works" className="max-w-6xl mx-auto px-6 py-20 md:py-28 relative z-10">
-        <div className="backdrop-blur-sm bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-slate-700/50 rounded-3xl p-12 md:p-16">
+        <div className="reveal-up backdrop-blur-sm bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-slate-700/50 rounded-3xl p-12 md:p-16">
           <h2 className="animate-slide-up text-4xl md:text-5xl font-bold mb-16 text-center text-white">GitFolio in 3 Simple Steps</h2>
           
           <div className="grid md:grid-cols-3 gap-8 relative">
@@ -175,7 +203,7 @@ export default function Page() {
 
       {/* What You Can Showcase */}
       <section className="max-w-6xl mx-auto px-6 py-20 md:py-28 relative z-10">
-        <h2 className="animate-slide-up text-4xl md:text-5xl font-bold mb-16 text-center text-white">Showcase Everything That Matters</h2>
+        <h2 className="animate-slide-up reveal-up text-4xl md:text-5xl font-bold mb-16 text-center text-white">Showcase Everything That Matters</h2>
         <div className="grid md:grid-cols-2 gap-6">
           {[
             {
@@ -207,7 +235,7 @@ export default function Page() {
               color: "from-orange-500/20 to-red-500/20"
             },
           ].map((section, index) => (
-            <div key={index} className={`animate-slide-up relative overflow-hidden rounded-2xl border border-slate-700/50 backdrop-blur-sm bg-gradient-to-br ${section.color} p-8 hover:border-slate-600/80 hover:shadow-xl hover:shadow-slate-900/30 transition-all duration-300`} style={{ animationDelay: `${index * 0.1}s` }}>
+            <div key={index} className={`animate-slide-up reveal-up relative overflow-hidden rounded-2xl border border-slate-700/50 backdrop-blur-sm bg-gradient-to-br ${section.color} p-8 hover:border-slate-600/80 hover:shadow-xl hover:shadow-slate-900/30 transition-all duration-300`} style={{ animationDelay: `${index * 0.1}s` }}>
               <div className="flex items-start gap-4 mb-6">
                 <div className={`p-3 rounded-lg animate-scale-in bg-gradient-to-br ${section.title === "Projects" ? "from-blue-500 to-cyan-500" : section.title === "Skills & Expertise" ? "from-purple-500 to-pink-500" : section.title === "Certifications" ? "from-green-500 to-emerald-500" : "from-orange-500 to-red-500"} text-white shadow-lg`}>
                   {section.icon}
@@ -233,8 +261,8 @@ export default function Page() {
       {/* Testimonials Section */}
       <section className="max-w-6xl mx-auto px-6 py-20 md:py-28 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="animate-slide-up text-4xl md:text-5xl font-bold mb-4 text-white">Developers Love GitFolio</h2>
-          <p className="animate-slide-up text-slate-400 text-lg stagger-1">Join hundreds of developers transforming their careers</p>
+          <h2 className="animate-slide-up reveal-up text-4xl md:text-5xl font-bold mb-4 text-white">Developers Love GitFolio</h2>
+          <p className="animate-slide-up reveal-down text-slate-400 text-lg stagger-1">Join hundreds of developers transforming their careers</p>
         </div>
         
         <div className="grid md:grid-cols-3 gap-6">
@@ -261,7 +289,7 @@ export default function Page() {
               color: "from-orange-500 to-red-500"
             },
           ].map((testimonial, index) => (
-            <div key={index} className="animate-slide-up relative overflow-hidden rounded-2xl border border-slate-700/50 backdrop-blur-sm bg-slate-800/30 p-8 hover:border-slate-600/80 hover:shadow-xl hover:shadow-slate-900/30 transition-all duration-300 group" style={{ animationDelay: `${index * 0.1}s` }}>
+            <div key={index} className="animate-slide-up reveal-left relative overflow-hidden rounded-2xl border border-slate-700/50 backdrop-blur-sm bg-slate-800/30 p-8 hover:border-slate-600/80 hover:shadow-xl hover:shadow-slate-900/30 transition-all duration-300 group" style={{ animationDelay: `${index * 0.1}s` }}>
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-slate-700/20 to-transparent rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-300"></div>
               
               <div className="relative">
@@ -284,8 +312,8 @@ export default function Page() {
       {/* FAQ Section */}
       <section id="faqs" className="max-w-4xl mx-auto px-6 py-20 md:py-28 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="animate-slide-up text-4xl md:text-5xl font-bold mb-4 text-white">Common Questions</h2>
-          <p className="animate-slide-up text-slate-400 text-lg stagger-1">Everything you need to know about GitFolio</p>
+          <h2 className="animate-slide-up reveal-up text-4xl md:text-5xl font-bold mb-4 text-white">Common Questions</h2>
+          <p className="animate-slide-up reveal-down text-slate-400 text-lg stagger-1">Everything you need to know about GitFolio</p>
         </div>
         
         <div className="space-y-4">
@@ -318,7 +346,7 @@ export default function Page() {
             <button
               key={index}
               onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-              className="animate-slide-up w-full text-left rounded-xl border border-slate-700/50 backdrop-blur-sm bg-slate-800/30 hover:bg-slate-800/50 hover:border-slate-600/80 transition-all duration-300 overflow-hidden"
+              className="animate-slide-up reveal-up w-full text-left rounded-xl border border-slate-700/50 backdrop-blur-sm bg-slate-800/30 hover:bg-slate-800/50 hover:border-slate-600/80 transition-all duration-300 overflow-hidden"
               style={{ animationDelay: `${index * 0.08}s` }}
             >
               <div className="flex items-start justify-between gap-4 p-6">
@@ -341,12 +369,12 @@ export default function Page() {
           {/* Background gradient blur */}
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 blur-3xl rounded-3xl"></div>
           
-          <div className="animate-slide-up relative backdrop-blur-sm bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50 rounded-3xl p-12 md:p-16">
-            <h2 className="animate-slide-up text-4xl md:text-5xl font-bold mb-6 text-white stagger-1">Ready to Showcase Your Work?</h2>
-            <p className="animate-slide-up text-slate-300 text-lg mb-10 max-w-2xl mx-auto leading-relaxed stagger-2">
+          <div className="animate-slide-up reveal-up relative backdrop-blur-sm bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50 rounded-3xl p-12 md:p-16">
+            <h2 className="animate-slide-up reveal-down text-4xl md:text-5xl font-bold mb-6 text-white stagger-1">Ready to Showcase Your Work?</h2>
+            <p className="animate-slide-up reveal-left text-slate-300 text-lg mb-10 max-w-2xl mx-auto leading-relaxed stagger-2">
               Join hundreds of developers who&apos;ve already built stunning portfolios with GitFolio. It takes less than 5 minutes and costs nothing to get started.
             </p>
-            <div className="animate-slide-up flex gap-4 justify-center flex-wrap stagger-3">
+            <div className="animate-slide-up reveal-right flex gap-4 justify-center flex-wrap stagger-3">
               <Button size="lg" className="animate-scale-in bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:cursor-pointer text-white gap-2 shadow-lg shadow-blue-500/30 transition-all hover:scale-105 hover:shadow-blue-500/50">
                 <Rocket className="w-4 h-4" />
                 Create Your Portfolio Now
