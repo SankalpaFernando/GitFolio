@@ -74,8 +74,8 @@ export async function fetchGitHubUserData(accessToken: string): Promise<any | nu
   }
 }
 
-// Store GitHub credentials in Supabase
-export async function storeGitHubCredentials(
+// Store or update GitHub credentials (handles both insert and update)
+export async function storeOrUpdateGitHubCredentials(
   userId: string,
   githubData: any,
   accessToken: string
@@ -95,20 +95,46 @@ export async function storeGitHubCredentials(
       stored_at: new Date().toISOString(),
     }
 
-    const { data, error } = await supabase
+    console.log('[DB] Attempting to update credentials for user:', userId)
+    // Try to update first
+    const { data: updateData, error: updateError } = await supabase
+      .from('github_credentials')
+      .update(credentials)
+      .eq('user_id', userId)
+      .select()
+      .single()
+
+    // If update succeeded, return the updated data
+    if (!updateError && updateData) {
+      console.log('[DB] Successfully updated credentials for user:', userId)
+      return updateData
+    }
+
+    // If update failed, log why and try to insert
+    if (updateError) {
+      console.log('[DB] Update failed or returned 0 rows, attempting insert. Error:', updateError.message)
+    }
+
+    // If update failed due to no rows, try to insert
+    console.log('[DB] Inserting new credentials for user:', userId)
+    const { data: insertData, error: insertError } = await supabase
       .from('github_credentials')
       .insert([credentials])
       .select()
       .single()
 
-    if (error) {
-      console.error('Error storing GitHub credentials:', error)
+    if (insertError) {
+      console.error('[DB] Error inserting GitHub credentials:', insertError)
+      // Log the exact error for debugging
+      console.error('[DB] Insert error details:', JSON.stringify(insertError, null, 2))
+      console.error('[DB] Attempted to insert:', JSON.stringify(credentials, null, 2))
       return null
     }
 
-    return data
+    console.log('[DB] Successfully inserted new credentials for user:', userId)
+    return insertData
   } catch (error) {
-    console.error('Error storing GitHub credentials:', error)
+    console.error('[DB] Unexpected error in storeOrUpdateGitHubCredentials:', error)
     return null
   }
 }
@@ -116,20 +142,27 @@ export async function storeGitHubCredentials(
 // Get stored GitHub credentials from Supabase
 export async function getStoredGitHubCredentials(userId: string): Promise<GitHubCredentials | null> {
   try {
+    console.log('[DB] Fetching credentials for user:', userId)
     const { data, error } = await supabase
       .from('github_credentials')
       .select('*')
       .eq('user_id', userId)
-      .single()
+      .maybeSingle() // Use maybeSingle instead of single to avoid errors
 
     if (error) {
-      console.error('Error retrieving GitHub credentials:', error)
+      console.error('[DB] Error retrieving GitHub credentials:', error)
       return null
     }
 
+    if (!data) {
+      console.log('[DB] No credentials found for user:', userId)
+      return null
+    }
+
+    console.log('[DB] Successfully retrieved credentials for user:', userId)
     return data
   } catch (error) {
-    console.error('Error retrieving GitHub credentials:', error)
+    console.error('[DB] Unexpected error retrieving credentials:', error)
     return null
   }
 }
