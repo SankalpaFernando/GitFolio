@@ -7,6 +7,13 @@ import { Github, LogOut, Settings, Code } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useRouter, useSearchParams } from 'next/navigation'
 
+// Import portfolio components
+import LanguagesList from '@/components/portfolio/LanguagesList'
+import CertificatesList from '@/components/portfolio/CertificatesList'
+import EducationList from '@/components/portfolio/EducationList'
+import ExperienceList from '@/components/portfolio/ExperienceList'
+import GitHubProjectsList from '@/components/portfolio/GitHubProjectsList'
+
 interface GitHubCredentials {
   user_id?: string
   github_username: string
@@ -204,6 +211,34 @@ export default function DashboardPage() {
                     <Button className="bg-purple-600 hover:bg-purple-700 text-white text-sm">Configure</Button>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Portfolio Sections */}
+            <div className="mt-12 space-y-12">
+              {/* Languages Section */}
+              <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg p-8">
+                <LanguagesList />
+              </div>
+
+              {/* GitHub Projects Section */}
+              <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg p-8">
+                <GitHubProjectsList />
+              </div>
+
+              {/* Certificates Section */}
+              <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg p-8">
+                <CertificatesList />
+              </div>
+
+              {/* Education Section */}
+              <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg p-8">
+                <EducationList />
+              </div>
+
+              {/* Experience Section */}
+              <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg p-8">
+                <ExperienceList />
               </div>
             </div>
           </div>
