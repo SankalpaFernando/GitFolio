@@ -230,3 +230,456 @@ export async function fetchGitHubRepositories(accessToken: string): Promise<any[
     return null
   }
 }
+
+// ============ LANGUAGES / PROGRAMMING LANGUAGES ============
+
+export async function addLanguage(userId: string, language: {
+  language_name: string
+  proficiency_level?: string
+  years_of_experience?: number
+  order_index?: number
+}): Promise<any | null> {
+  try {
+    const { data, error } = await supabase
+      .from('languages')
+      .insert([{ user_id: userId, ...language }])
+      .select()
+      .single()
+
+    if (error) {
+      console.error('[DB] Error adding language:', error)
+      return null
+    }
+
+    return data
+  } catch (error) {
+    console.error('[DB] Unexpected error adding language:', error)
+    return null
+  }
+}
+
+export async function getLanguages(userId: string): Promise<any[] | null> {
+  try {
+    const { data, error } = await supabase
+      .from('languages')
+      .select('*')
+      .eq('user_id', userId)
+      .order('order_index', { ascending: true })
+
+    if (error) {
+      console.error('[DB] Error fetching languages:', error)
+      return null
+    }
+
+    return data || []
+  } catch (error) {
+    console.error('[DB] Unexpected error fetching languages:', error)
+    return null
+  }
+}
+
+export async function updateLanguage(languageId: string, updates: Partial<any>): Promise<any | null> {
+  try {
+    const { data, error } = await supabase
+      .from('languages')
+      .update(updates)
+      .eq('id', languageId)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('[DB] Error updating language:', error)
+      return null
+    }
+
+    return data
+  } catch (error) {
+    console.error('[DB] Unexpected error updating language:', error)
+    return null
+  }
+}
+
+export async function deleteLanguage(languageId: string): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('languages')
+      .delete()
+      .eq('id', languageId)
+
+    if (error) {
+      console.error('[DB] Error deleting language:', error)
+      return false
+    }
+
+    return true
+  } catch (error) {
+    console.error('[DB] Unexpected error deleting language:', error)
+    return false
+  }
+}
+
+// ============ CERTIFICATES ============
+
+export async function addCertificate(userId: string, certificate: {
+  certificate_name: string
+  issuer?: string
+  issue_date?: string
+  expiry_date?: string
+  certificate_url?: string
+  credential_id?: string
+  description?: string
+  order_index?: number
+}): Promise<any | null> {
+  try {
+    const { data, error } = await supabase
+      .from('certificates')
+      .insert([{ user_id: userId, ...certificate }])
+      .select()
+      .single()
+
+    if (error) {
+      console.error('[DB] Error adding certificate:', error)
+      return null
+    }
+
+    return data
+  } catch (error) {
+    console.error('[DB] Unexpected error adding certificate:', error)
+    return null
+  }
+}
+
+export async function getCertificates(userId: string): Promise<any[] | null> {
+  try {
+    const { data, error } = await supabase
+      .from('certificates')
+      .select('*')
+      .eq('user_id', userId)
+      .order('order_index', { ascending: true })
+
+    if (error) {
+      console.error('[DB] Error fetching certificates:', error)
+      return null
+    }
+
+    return data || []
+  } catch (error) {
+    console.error('[DB] Unexpected error fetching certificates:', error)
+    return null
+  }
+}
+
+export async function updateCertificate(certificateId: string, updates: Partial<any>): Promise<any | null> {
+  try {
+    const { data, error } = await supabase
+      .from('certificates')
+      .update(updates)
+      .eq('id', certificateId)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('[DB] Error updating certificate:', error)
+      return null
+    }
+
+    return data
+  } catch (error) {
+    console.error('[DB] Unexpected error updating certificate:', error)
+    return null
+  }
+}
+
+export async function deleteCertificate(certificateId: string): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('certificates')
+      .delete()
+      .eq('id', certificateId)
+
+    if (error) {
+      console.error('[DB] Error deleting certificate:', error)
+      return false
+    }
+
+    return true
+  } catch (error) {
+    console.error('[DB] Unexpected error deleting certificate:', error)
+    return false
+  }
+}
+
+// ============ EDUCATION ============
+
+export async function addEducation(userId: string, education: {
+  school_name: string
+  degree?: string
+  field_of_study?: string
+  start_date?: string
+  end_date?: string
+  grade?: string
+  description?: string
+  order_index?: number
+}): Promise<any | null> {
+  try {
+    const { data, error } = await supabase
+      .from('education')
+      .insert([{ user_id: userId, ...education }])
+      .select()
+      .single()
+
+    if (error) {
+      console.error('[DB] Error adding education:', error)
+      return null
+    }
+
+    return data
+  } catch (error) {
+    console.error('[DB] Unexpected error adding education:', error)
+    return null
+  }
+}
+
+export async function getEducation(userId: string): Promise<any[] | null> {
+  try {
+    const { data, error } = await supabase
+      .from('education')
+      .select('*')
+      .eq('user_id', userId)
+      .order('order_index', { ascending: true })
+
+    if (error) {
+      console.error('[DB] Error fetching education:', error)
+      return null
+    }
+
+    return data || []
+  } catch (error) {
+    console.error('[DB] Unexpected error fetching education:', error)
+    return null
+  }
+}
+
+export async function updateEducation(educationId: string, updates: Partial<any>): Promise<any | null> {
+  try {
+    const { data, error } = await supabase
+      .from('education')
+      .update(updates)
+      .eq('id', educationId)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('[DB] Error updating education:', error)
+      return null
+    }
+
+    return data
+  } catch (error) {
+    console.error('[DB] Unexpected error updating education:', error)
+    return null
+  }
+}
+
+export async function deleteEducation(educationId: string): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('education')
+      .delete()
+      .eq('id', educationId)
+
+    if (error) {
+      console.error('[DB] Error deleting education:', error)
+      return false
+    }
+
+    return true
+  } catch (error) {
+    console.error('[DB] Unexpected error deleting education:', error)
+    return false
+  }
+}
+
+// ============ EXPERIENCE ============
+
+export async function addExperience(userId: string, experience: {
+  company_name: string
+  job_title: string
+  employment_type?: string
+  location?: string
+  start_date: string
+  end_date?: string
+  is_current?: boolean
+  description?: string
+  skills_used?: string[]
+  order_index?: number
+}): Promise<any | null> {
+  try {
+    const { data, error } = await supabase
+      .from('experience')
+      .insert([{ user_id: userId, ...experience }])
+      .select()
+      .single()
+
+    if (error) {
+      console.error('[DB] Error adding experience:', error)
+      return null
+    }
+
+    return data
+  } catch (error) {
+    console.error('[DB] Unexpected error adding experience:', error)
+    return null
+  }
+}
+
+export async function getExperience(userId: string): Promise<any[] | null> {
+  try {
+    const { data, error } = await supabase
+      .from('experience')
+      .select('*')
+      .eq('user_id', userId)
+      .order('order_index', { ascending: true })
+
+    if (error) {
+      console.error('[DB] Error fetching experience:', error)
+      return null
+    }
+
+    return data || []
+  } catch (error) {
+    console.error('[DB] Unexpected error fetching experience:', error)
+    return null
+  }
+}
+
+export async function updateExperience(experienceId: string, updates: Partial<any>): Promise<any | null> {
+  try {
+    const { data, error } = await supabase
+      .from('experience')
+      .update(updates)
+      .eq('id', experienceId)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('[DB] Error updating experience:', error)
+      return null
+    }
+
+    return data
+  } catch (error) {
+    console.error('[DB] Unexpected error updating experience:', error)
+    return null
+  }
+}
+
+export async function deleteExperience(experienceId: string): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('experience')
+      .delete()
+      .eq('id', experienceId)
+
+    if (error) {
+      console.error('[DB] Error deleting experience:', error)
+      return false
+    }
+
+    return true
+  } catch (error) {
+    console.error('[DB] Unexpected error deleting experience:', error)
+    return false
+  }
+}
+
+// ============ GITHUB PROJECTS ============
+
+export async function addGitHubProject(userId: string, project: {
+  repo_name: string
+  repo_url?: string
+  description?: string
+  language?: string
+  stars?: number
+  forks?: number
+  featured?: boolean
+  order_index?: number
+}): Promise<any | null> {
+  try {
+    const { data, error } = await supabase
+      .from('github_projects')
+      .insert([{ user_id: userId, ...project }])
+      .select()
+      .single()
+
+    if (error) {
+      console.error('[DB] Error adding GitHub project:', error)
+      return null
+    }
+
+    return data
+  } catch (error) {
+    console.error('[DB] Unexpected error adding GitHub project:', error)
+    return null
+  }
+}
+
+export async function getGitHubProjects(userId: string): Promise<any[] | null> {
+  try {
+    const { data, error } = await supabase
+      .from('github_projects')
+      .select('*')
+      .eq('user_id', userId)
+      .order('order_index', { ascending: true })
+
+    if (error) {
+      console.error('[DB] Error fetching GitHub projects:', error)
+      return null
+    }
+
+    return data || []
+  } catch (error) {
+    console.error('[DB] Unexpected error fetching GitHub projects:', error)
+    return null
+  }
+}
+
+export async function updateGitHubProject(projectId: string, updates: Partial<any>): Promise<any | null> {
+  try {
+    const { data, error } = await supabase
+      .from('github_projects')
+      .update(updates)
+      .eq('id', projectId)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('[DB] Error updating GitHub project:', error)
+      return null
+    }
+
+    return data
+  } catch (error) {
+    console.error('[DB] Unexpected error updating GitHub project:', error)
+    return null
+  }
+}
+
+export async function deleteGitHubProject(projectId: string): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('github_projects')
+      .delete()
+      .eq('id', projectId)
+
+    if (error) {
+      console.error('[DB] Error deleting GitHub project:', error)
+      return false
+    }
+
+    return true
+  } catch (error) {
+    console.error('[DB] Unexpected error deleting GitHub project:', error)
+    return false
+  }
+}
