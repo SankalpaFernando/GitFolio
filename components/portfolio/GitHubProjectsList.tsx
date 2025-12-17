@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Trash2, Plus, ExternalLink, Star, GitFork } from 'lucide-react'
+import { Trash2, RefreshCw, ExternalLink, Star, GitFork, Github } from 'lucide-react'
 
 interface GitHubProject {
   id: string
@@ -15,17 +15,22 @@ interface GitHubProject {
   featured?: boolean
 }
 
+interface GitHubRepo {
+  id: number
+  name: string
+  url: string
+  description: string | null
+  language: string | null
+  stargazers_count: number
+  forks_count: number
+}
+
 export default function GitHubProjectsList() {
   const [projects, setProjects] = useState<GitHubProject[]>([])
   const [loading, setLoading] = useState(true)
-  const [newProject, setNewProject] = useState({
-    repo_name: '',
-    repo_url: '',
-    description: '',
-    language: '',
-    featured: false,
-  })
-  const [showForm, setShowForm] = useState(false)
+  const [fetchingRepos, setFetchingRepos] = useState(false)
+  const [availableRepos, setAvailableRepos] = useState<GitHubRepo[]>([])
+  const [showRepoSelection, setShowRepoSelection] = useState(false)
 
   useEffect(() => {
     fetchProjects()
@@ -45,20 +50,47 @@ export default function GitHubProjectsList() {
     }
   }
 
-  const handleAdd = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleFetchFromGitHub = async () => {
+    setFetchingRepos(true)
+    try {
+      const res = await fetch('/api/portfolio/github-repos')
+      if (res.ok) {
+        const repos = await res.json()
+        console.log('Fetched repos:', repos)
+        setAvailableRepos(repos)
+        setShowRepoSelection(true)
+      } else {
+        console.error('Failed to fetch repositories')
+        alert('Failed to fetch repositories from GitHub')
+      }
+    } catch (error) {
+      console.error('Error fetching repos:', error)
+      alert('Error fetching repositories: ' + (error instanceof Error ? error.message : String(error)))
+    } finally {
+      setFetchingRepos(false)
+    }
+  }
+
+  const handleAddRepoFromGitHub = async (repo: GitHubRepo) => {
     try {
       const res = await fetch('/api/portfolio/github-projects', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newProject),
+        body: JSON.stringify({
+          repo_name: repo.name,
+          repo_url: repo.url,
+          description: repo.description,
+          language: repo.language,
+          stars: repo.stargazers_count,
+          forks: repo.forks_count,
+          featured: false,
+        }),
       })
 
       if (res.ok) {
         const data = await res.json()
         setProjects([...projects, data])
-        setNewProject({ repo_name: '', repo_url: '', description: '', language: '', featured: false })
-        setShowForm(false)
+        setAvailableRepos(availableRepos.filter((r) => r.id !== repo.id))
       }
     } catch (error) {
       console.error('Error adding project:', error)
@@ -106,86 +138,84 @@ export default function GitHubProjectsList() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-semibold text-white">GitHub Projects</h3>
-        <Button onClick={() => setShowForm(!showForm)} size="sm" variant="outline">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Project
+        <Button
+          onClick={handleFetchFromGitHub}
+          disabled={fetchingRepos}
+          size="sm"
+          className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
+        >
+          <Github className="h-4 w-4" />
+          {fetchingRepos ? 'Fetching...' : 'Fetch from GitHub'}
         </Button>
       </div>
 
-      {showForm && (
-        <form onSubmit={handleAdd} className="p-4 bg-gray-800 rounded-lg border border-gray-700 space-y-3">
-          <div>
-            <label className="block text-sm text-gray-300 mb-1">Repository Name *</label>
-            <input
-              type="text"
-              value={newProject.repo_name}
-              onChange={(e) => setNewProject({ ...newProject, repo_name: e.target.value })}
-              placeholder="e.g., awesome-project"
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm text-gray-300 mb-1">Repository URL</label>
-            <input
-              type="url"
-              value={newProject.repo_url}
-              onChange={(e) => setNewProject({ ...newProject, repo_url: e.target.value })}
-              placeholder="https://github.com/username/repo"
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm text-gray-300 mb-1">Language</label>
-              <input
-                type="text"
-                value={newProject.language}
-                onChange={(e) => setNewProject({ ...newProject, language: e.target.value })}
-                placeholder="e.g., TypeScript"
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400"
-              />
+      {/* Repository Selection Modal */}
+      {showRepoSelection && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-lg border border-gray-700 max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-semibold text-white">Select Repositories to Showcase</h4>
+              <button
+                onClick={() => setShowRepoSelection(false)}
+                className="text-gray-400 hover:text-white text-2xl leading-none"
+              >
+                ✕
+              </button>
             </div>
 
-            <div className="flex items-end">
-              <label className="flex items-center gap-2 text-sm text-gray-300">
-                <input
-                  type="checkbox"
-                  checked={newProject.featured}
-                  onChange={(e) => setNewProject({ ...newProject, featured: e.target.checked })}
-                  className="rounded"
-                />
-                Featured
-              </label>
+            {availableRepos.length === 0 ? (
+              <p className="text-gray-400">All repositories are already added or no repositories found</p>
+            ) : (
+              <div className="space-y-2">
+                {availableRepos.map((repo) => (
+                  <div
+                    key={repo.id}
+                    className="p-3 bg-gray-700 rounded border border-gray-600 flex items-start justify-between hover:border-blue-500/50 transition"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-white truncate">{repo.name}</p>
+                      {repo.description && (
+                        <p className="text-sm text-gray-300 line-clamp-2 mt-1">{repo.description}</p>
+                      )}
+                      <div className="flex items-center gap-3 text-xs text-gray-400 mt-2">
+                        {repo.language && <span className="bg-gray-600 px-2 py-1 rounded">{repo.language}</span>}
+                        {repo.stargazers_count > 0 && (
+                          <span className="flex items-center gap-1">
+                            <Star className="h-3 w-3" /> {repo.stargazers_count}
+                          </span>
+                        )}
+                        {repo.forks_count > 0 && (
+                          <span className="flex items-center gap-1">
+                            <GitFork className="h-3 w-3" /> {repo.forks_count}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleAddRepoFromGitHub(repo)}
+                      className="ml-3 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm whitespace-nowrap transition"
+                    >
+                      Add
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-4 flex justify-end">
+              <Button onClick={() => setShowRepoSelection(false)} variant="outline" size="sm">
+                Close
+              </Button>
             </div>
           </div>
-
-          <div>
-            <label className="block text-sm text-gray-300 mb-1">Description</label>
-            <textarea
-              value={newProject.description}
-              onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
-              placeholder="Brief description of the project..."
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400"
-              rows={2}
-            />
-          </div>
-
-          <div className="flex gap-2 justify-end">
-            <Button type="button" variant="outline" onClick={() => setShowForm(false)} size="sm">
-              Cancel
-            </Button>
-            <Button type="submit" size="sm">
-              Add Project
-            </Button>
-          </div>
-        </form>
+        </div>
       )}
 
       {projects.length === 0 ? (
-        <p className="text-gray-400">No projects added yet</p>
+        <div className="text-center py-8">
+          <p className="text-gray-400 mb-3">No projects showcased yet</p>
+          <p className="text-sm text-gray-500">Click &quot;Fetch from GitHub&quot; to add your repositories</p>
+        </div>
       ) : (
         <div className="space-y-4">
           {featuredProjects.length > 0 && (
