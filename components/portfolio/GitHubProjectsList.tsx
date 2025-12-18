@@ -152,12 +152,13 @@ export default function GitHubProjectsList() {
       {/* Repository Selection Modal */}
       {showRepoSelection && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-lg border border-gray-700 max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h4 className="text-lg font-semibold text-white">Select Repositories to Showcase</h4>
+          <div className="bg-gray-800 rounded-lg border border-gray-700 max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6 relative">
+            <div className="flex items-center mb-4">
+              <h4 className="text-lg font-semibold text-white flex-1">Select Repositories to Showcase</h4>
               <button
                 onClick={() => setShowRepoSelection(false)}
-                className="text-gray-400 hover:text-white text-2xl leading-none"
+                className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl leading-none w-8 h-8 flex items-center justify-center hover:bg-gray-700 rounded transition"
+                title="Close modal"
               >
                 ✕
               </button>
@@ -166,7 +167,7 @@ export default function GitHubProjectsList() {
             {availableRepos.length === 0 ? (
               <p className="text-gray-400">All repositories are already added or no repositories found</p>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-2 mt-4">
                 {availableRepos.map((repo) => (
                   <div
                     key={repo.id}
@@ -195,18 +196,12 @@ export default function GitHubProjectsList() {
                       onClick={() => handleAddRepoFromGitHub(repo)}
                       className="ml-3 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm whitespace-nowrap transition"
                     >
-                      Add
+                      + Add
                     </button>
                   </div>
                 ))}
               </div>
             )}
-
-            <div className="mt-4 flex justify-end">
-              <Button onClick={() => setShowRepoSelection(false)} variant="outline" size="sm">
-                Close
-              </Button>
-            </div>
           </div>
         </div>
       )}
@@ -226,7 +221,12 @@ export default function GitHubProjectsList() {
                   <div key={proj.id} className="p-3 bg-gradient-to-r from-yellow-900 to-gray-800 rounded border border-yellow-700">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <p className="font-medium text-white">{proj.repo_name}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-white">{proj.repo_name}</p>
+                          <span className="px-2 py-0.5 bg-green-600/30 text-green-300 text-xs rounded border border-green-600/50 flex items-center gap-1">
+                            ✓ Added
+                          </span>
+                        </div>
                         {proj.description && <p className="text-sm text-gray-300 mt-1">{proj.description}</p>}
                         <div className="flex items-center gap-3 text-xs text-gray-400 mt-2">
                           {proj.language && <span>{proj.language}</span>}
@@ -284,7 +284,12 @@ export default function GitHubProjectsList() {
                   <div key={proj.id} className="p-3 bg-gray-800 rounded border border-gray-700">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <p className="font-medium text-white">{proj.repo_name}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-white">{proj.repo_name}</p>
+                          <span className="px-2 py-0.5 bg-green-600/30 text-green-300 text-xs rounded border border-green-600/50 flex items-center gap-1">
+                            ✓ Added
+                          </span>
+                        </div>
                         {proj.description && <p className="text-sm text-gray-400 mt-1">{proj.description}</p>}
                         <div className="flex items-center gap-3 text-xs text-gray-500 mt-2">
                           {proj.language && <span>{proj.language}</span>}
