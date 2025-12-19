@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Trash2, Plus, Edit2 } from 'lucide-react'
+import { Trash2, Plus } from 'lucide-react'
+import { PROGRAMMING_LANGUAGES, getLanguageByName } from '@/lib/languages'
 
 interface Language {
   id: string
@@ -91,15 +92,20 @@ export default function LanguagesList() {
       {showForm && (
         <form onSubmit={handleAdd} className="p-4 bg-gray-800 rounded-lg border border-gray-700 space-y-3">
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Language Name</label>
-            <input
-              type="text"
+            <label className="block text-sm text-gray-300 mb-2">Select Language</label>
+            <select
               value={newLanguage.language_name}
               onChange={(e) => setNewLanguage({ ...newLanguage, language_name: e.target.value })}
-              placeholder="e.g., TypeScript, Python"
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white"
               required
-            />
+            >
+              <option value="">-- Select a Language --</option>
+              {PROGRAMMING_LANGUAGES.map((lang) => (
+                <option key={lang.name} value={lang.name}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -145,24 +151,40 @@ export default function LanguagesList() {
         <p className="text-gray-400">No languages added yet</p>
       ) : (
         <div className="grid gap-2">
-          {languages.map((lang) => (
-            <div key={lang.id} className="p-3 bg-gray-800 rounded border border-gray-700 flex items-center justify-between">
-              <div className="flex-1">
-                <p className="font-medium text-white">{lang.language_name}</p>
-                <p className="text-sm text-gray-400">
-                  {lang.proficiency_level}
-                  {lang.years_of_experience ? ` • ${lang.years_of_experience} years` : ''}
-                </p>
-              </div>
-              <button
-                onClick={() => handleDelete(lang.id)}
-                className="p-2 hover:bg-red-900 rounded transition"
-                title="Delete language"
+          {languages.map((lang) => {
+            const langData = getLanguageByName(lang.language_name)
+            return (
+              <div
+                key={lang.id}
+                className="p-3 bg-gray-800 rounded border border-gray-700 flex items-center justify-between hover:border-gray-600 transition"
               >
-                <Trash2 className="h-4 w-4 text-red-400" />
-              </button>
-            </div>
-          ))}
+                <div className="flex-1 flex items-center gap-3">
+                  {langData && (
+                    <div
+                      className="px-3 py-1 rounded font-bold text-white text-sm flex-shrink-0"
+                      style={{ backgroundColor: langData.color }}
+                    >
+                      {langData.badge}
+                    </div>
+                  )}
+                  <div>
+                    <p className="font-medium text-white">{lang.language_name}</p>
+                    <p className="text-sm text-gray-400">
+                      {lang.proficiency_level}
+                      {lang.years_of_experience ? ` • ${lang.years_of_experience} year${lang.years_of_experience !== 1 ? 's' : ''}` : ''}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleDelete(lang.id)}
+                  className="p-2 hover:bg-red-900 rounded transition"
+                  title="Delete language"
+                >
+                  <Trash2 className="h-4 w-4 text-red-400" />
+                </button>
+              </div>
+            )
+          })}
         </div>
       )}
     </div>
