@@ -189,33 +189,3 @@ ALTER TABLE education DROP CONSTRAINT IF EXISTS education_user_id_fkey;
 ALTER TABLE experience DROP CONSTRAINT IF EXISTS experience_user_id_fkey;
 ALTER TABLE github_projects DROP CONSTRAINT IF EXISTS github_projects_user_id_fkey;
 
--- RLS Policies - Allow all operations with permissive policy
-CREATE POLICY "Allow all github_credentials operations"
-  ON github_credentials FOR ALL USING (true) WITH CHECK (true);
-
-CREATE POLICY "Allow all portfolio_settings operations"
-  ON portfolio_settings FOR ALL USING (true) WITH CHECK (true);
-
-CREATE POLICY "Allow all portfolio_projects operations"
-  ON portfolio_projects FOR ALL USING (true) WITH CHECK (true);
-
-CREATE POLICY "Allow all portfolio_skills operations"
-  ON portfolio_skills FOR ALL USING (true) WITH CHECK (true);
-
-CREATE POLICY "Allow all auth_logs operations"
-  ON auth_logs FOR ALL USING (true) WITH CHECK (true);
-
-CREATE POLICY "Allow all languages operations"
-  ON languages FOR ALL USING (true) WITH CHECK (true);
-
-CREATE POLICY "Allow all certificates operations"
-  ON certificates FOR ALL USING (true) WITH CHECK (true);
-
-CREATE POLICY "Allow all education operations"
-  ON education FOR ALL USING (true) WITH CHECK (true);
-
-CREATE POLICY "Allow all experience operations"
-  ON experience FOR ALL USING (true) WITH CHECK (true);
-
-CREATE POLICY "Allow all github_projects operations"
-  ON github_projects FOR ALL USING (true) WITH CHECK (true);
