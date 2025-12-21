@@ -152,56 +152,60 @@ export default function GitHubProjectsList() {
       {/* Repository Selection Modal */}
       {showRepoSelection && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-lg border border-gray-700 max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6 relative">
-            <div className="flex items-center mb-4">
-              <h4 className="text-lg font-semibold text-white flex-1">Select Repositories to Showcase</h4>
+          <div className="bg-gray-800 rounded-lg border border-gray-700 max-w-2xl w-full max-h-[80vh] flex flex-col">
+            {/* Fixed Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700 flex-shrink-0">
+              <h4 className="text-lg font-semibold text-white">Select Repositories to Showcase</h4>
               <button
                 onClick={() => setShowRepoSelection(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl leading-none w-8 h-8 flex items-center justify-center hover:bg-gray-700 rounded transition"
+                className="text-gray-400 hover:text-white text-2xl leading-none w-8 h-8 flex items-center justify-center hover:bg-gray-700 rounded transition"
                 title="Close modal"
               >
                 ✕
               </button>
             </div>
 
-            {availableRepos.length === 0 ? (
-              <p className="text-gray-400">All repositories are already added or no repositories found</p>
-            ) : (
-              <div className="space-y-2 mt-4">
-                {availableRepos.map((repo) => (
-                  <div
-                    key={repo.id}
-                    className="p-3 bg-gray-700 rounded border border-gray-600 flex items-start justify-between hover:border-blue-500/50 transition"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-white truncate">{repo.name}</p>
-                      {repo.description && (
-                        <p className="text-sm text-gray-300 line-clamp-2 mt-1">{repo.description}</p>
-                      )}
-                      <div className="flex items-center gap-3 text-xs text-gray-400 mt-2">
-                        {repo.language && <span className="bg-gray-600 px-2 py-1 rounded">{repo.language}</span>}
-                        {repo.stargazers_count > 0 && (
-                          <span className="flex items-center gap-1">
-                            <Star className="h-3 w-3" /> {repo.stargazers_count}
-                          </span>
-                        )}
-                        {repo.forks_count > 0 && (
-                          <span className="flex items-center gap-1">
-                            <GitFork className="h-3 w-3" /> {repo.forks_count}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleAddRepoFromGitHub(repo)}
-                      className="ml-3 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm whitespace-nowrap transition"
+            {/* Scrollable Content */}
+            <div className="overflow-y-auto flex-1 px-6 py-4">
+              {availableRepos.length === 0 ? (
+                <p className="text-gray-400">All repositories are already added or no repositories found</p>
+              ) : (
+                <div className="space-y-2">
+                  {availableRepos.map((repo) => (
+                    <div
+                      key={repo.id}
+                      className="p-3 bg-gray-700 rounded border border-gray-600 flex items-start justify-between hover:border-blue-500/50 transition"
                     >
-                      + Add
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-white truncate">{repo.name}</p>
+                        {repo.description && (
+                          <p className="text-sm text-gray-300 line-clamp-2 mt-1">{repo.description}</p>
+                        )}
+                        <div className="flex items-center gap-3 text-xs text-gray-400 mt-2">
+                          {repo.language && <span className="bg-gray-600 px-2 py-1 rounded">{repo.language}</span>}
+                          {repo.stargazers_count > 0 && (
+                            <span className="flex items-center gap-1">
+                              <Star className="h-3 w-3" /> {repo.stargazers_count}
+                            </span>
+                          )}
+                          {repo.forks_count > 0 && (
+                            <span className="flex items-center gap-1">
+                              <GitFork className="h-3 w-3" /> {repo.forks_count}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleAddRepoFromGitHub(repo)}
+                        className="ml-3 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm whitespace-nowrap transition"
+                      >
+                        + Add
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
