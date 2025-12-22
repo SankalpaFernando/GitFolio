@@ -4,6 +4,32 @@ import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Trash2, RefreshCw, ExternalLink, Star, GitFork, Github } from 'lucide-react'
 
+const scrollbarStyles = `
+  .repo-scrollable::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .repo-scrollable::-webkit-scrollbar-track {
+    background: transparent;
+    margin-right: 4px;
+  }
+  
+  .repo-scrollable::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 4px;
+    border: 2px solid #374151;
+  }
+  
+  .repo-scrollable::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+  }
+  
+  .repo-scrollable {
+    scrollbar-color: #4b5563 transparent;
+    scrollbar-width: thin;
+  }
+`
+
 interface GitHubProject {
   id: string
   repo_name: string
@@ -135,7 +161,9 @@ export default function GitHubProjectsList() {
   const otherProjects = projects.filter((p) => !p.featured)
 
   return (
-    <div className="space-y-4">
+    <>
+      <style>{scrollbarStyles}</style>
+      <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-semibold text-white">GitHub Projects</h3>
         <Button
@@ -166,7 +194,7 @@ export default function GitHubProjectsList() {
             </div>
 
             {/* Scrollable Content */}
-            <div className="overflow-y-auto flex-1 px-6 py-4">
+            <div className="repo-scrollable overflow-y-auto flex-1 px-6 py-4">
               {availableRepos.length === 0 ? (
                 <p className="text-gray-400">All repositories are already added or no repositories found</p>
               ) : (
@@ -345,5 +373,6 @@ export default function GitHubProjectsList() {
         </div>
       )}
     </div>
+    </>
   )
 }
