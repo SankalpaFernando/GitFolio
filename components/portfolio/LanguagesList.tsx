@@ -162,9 +162,10 @@ export default function LanguagesList() {
                   {langData && (
                     <div
                       className="px-3 py-1 rounded font-bold text-white text-sm flex-shrink-0"
-                      style={{ backgroundColor: langData.color }}
+                      style={{ }}
                     >
-                      {langData.badge}
+                        {/* <i className={`${langData.icon} colored text-2xl`}></i> */}
+                        <img src={langData.icon} alt={langData.name} className="w-6 h-6" />
                     </div>
                   )}
                   <div>
