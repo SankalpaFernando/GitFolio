@@ -171,7 +171,7 @@ export default function LanguagesList() {
                   <div>
                     <p className="font-medium text-white">{lang.language_name}</p>
                     <p className="text-sm text-gray-400">
-                      {lang.proficiency_level}
+                      {lang.proficiency_level ? `${lang.proficiency_level.charAt(0).toUpperCase() + lang.proficiency_level.slice(1)}` : 'Proficiency not set'}
                       {lang.years_of_experience ? ` • ${lang.years_of_experience} year${lang.years_of_experience !== 1 ? 's' : ''}` : ''}
                     </p>
                   </div>
