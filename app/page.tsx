@@ -56,7 +56,10 @@ export default function Page() {
             <a href="#how-it-works" className={`nav-link transition-colors ${activeSection === 'how-it-works' ? 'text-blue-400 active' : 'text-slate-300 hover:text-blue-400'}`}>How it Works</a>
             <a href="#faqs" className={`nav-link transition-colors ${activeSection === 'faqs' ? 'text-blue-400 active' : 'text-slate-300 hover:text-blue-400'}`}>FAQs</a>
           </div>
-          <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all hover:shadow-lg hover:shadow-blue-500/40">Sign In</Button>
+          <div className="flex gap-2">
+            <a href="/dashboard" className="text-slate-300 hover:text-blue-400 transition text-sm">Dashboard</a>
+            <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all hover:shadow-lg hover:shadow-blue-500/40">Sign In</Button>
+          </div>
         </div>
       </nav>
 
